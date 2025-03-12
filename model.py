@@ -15,28 +15,49 @@ df = pd.read_csv(file_path)
 # Chuyển đổi giá trị thành số thực
 df = df.astype(float)
 
-# Xây dựng nhãn theo quy tắc đã đề ra
+# Xây dựng nhãn theo quy tắc phức tạp hơn
 def classify_health_state(avg_bpm, a_total):
-    if 60 <= avg_bpm <= 110 and a_total < 12:
-        return "Bình thường"
-    elif 60 <= avg_bpm <= 110 and 12 <= a_total <= 30:
-        return "Hoạt động nhẹ"
-    elif 60 <= avg_bpm <= 110 and a_total > 30:
-        return "Hoạt động mạnh"
-    elif (avg_bpm < 60 or avg_bpm > 110) and a_total < 12:
-        return "Cảnh báo sức khoẻ không ổn định"
-    elif avg_bpm > 110 and a_total > 30:
-        return "Hoạt động thể chất mạnh"
-    elif (avg_bpm < 50 and a_total < 12) or (avg_bpm > 150 and a_total > 30):
-        return "Sức khoẻ siêu tốt"
-    else:
-        return "Không xác định"
+    # Trường hợp BPM trong khoảng 60-110
+    if 60 <= avg_bpm <= 110:
+        if a_total < 12:
+            return "Bình thường"
+        elif 12 <= a_total < 20:
+            return "Hoạt động nhẹ"
+        elif 20 <= a_total < 35:
+            return "Hoạt động trung bình"
+        else:
+            return "Hoạt động mạnh"
+
+    # Trường hợp BPM quá thấp hoặc quá cao
+    if avg_bpm < 60:
+        if a_total < 12:
+            return "Cảnh báo sức khoẻ không ổn định"
+        elif a_total >= 35:
+            return "Hoạt động mạnh bất thường"
+
+    if avg_bpm > 110:
+        if a_total < 12:
+            return "Nhịp tim cao bất thường"
+        elif 12 <= a_total < 35:
+            return "Hoạt động thể chất mạnh"
+        else:
+            return "Hoạt động cực độ"
+
+    # Trường hợp đặc biệt sức khỏe tốt hoặc rất xấu
+    if avg_bpm < 50 and a_total < 12:
+        return "Sức khỏe siêu tốt"
+
+    if avg_bpm > 150 and a_total > 35:
+        return "Cảnh báo nguy hiểm"
+
+    return "Không xác định"
 
 # Tạo cột nhãn
 df["label"] = df.apply(lambda row: classify_health_state(row["AvgBPM"], row["A_total"]), axis=1)
 
-# Xóa các dữ liệu không xác định
+# Xóa dữ liệu không xác định
 df = df[df["label"] != "Không xác định"]
+
 
 # Chuyển nhãn thành số
 label_encoder = LabelEncoder()
