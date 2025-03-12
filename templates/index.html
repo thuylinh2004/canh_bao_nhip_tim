@@ -1,109 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Heart Rate Monitor</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        h2 {
-            color: #333;
-        }
-        .container {
-            width: 90%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            font-size: 14px;
-        }
-        th {
-            background: #007bff;
-            color: white;
-        }
-        canvas {
-            max-width: 100%;
-            margin-top: 20px;
-        }
-        .alert {
-            font-weight: bold;
-            font-size: 18px;
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .normal { color: green; background: #d4edda; }
-        .warning { color: orange; background: #ffe6cc; }
-        .danger { color: red; background: #ffcccc; }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      h2 {
+        color: #333;
+      }
+      .container {
+        width: 90%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        font-size: 14px;
+      }
+      th {
+        background: #007bff;
+        color: white;
+      }
+      canvas {
+        max-width: 100%;
+        margin-top: 20px;
+      }
+      .alert {
+        font-weight: bold;
+        font-size: 18px;
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .normal {
+        color: green;
+        background: #d4edda;
+      }
+      .warning {
+        color: orange;
+        background: #ffe6cc;
+      }
+      .danger {
+        color: red;
+        background: #ffcccc;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Heart Rate and Motion Monitoring</h2>
 
-<div class="container">
-    <h2>Heart Rate and Motion Monitoring</h2>
-    
-    <div id="alert-status" class="alert"></div>
+      <div id="alert-status" class="alert"></div>
 
-    <table>
+      <table>
         <thead>
-            <tr>
-                <th>IR Value</th>
-                <th>BPM</th>
-                <th>Avg BPM</th>
-                <th>Accel X</th>
-                <th>Accel Y</th>
-                <th>Accel Z</th>
-                <th>Total Accel</th>
-            </tr>
+          <tr>
+            <th>IR Value</th>
+            <th>BPM</th>
+            <th>Avg BPM</th>
+            <th>Accel X</th>
+            <th>Accel Y</th>
+            <th>Accel Z</th>
+            <th>Total Accel</th>
+          </tr>
         </thead>
         <tbody id="data-table"></tbody>
-    </table>
+      </table>
 
-    <canvas id="irChart"></canvas>
-</div>
+      <canvas id="irChart"></canvas>
+    </div>
 
-<script>
-    let bpmData = [];
-    let accelData = [];
-    let labels = [];
-    
-    async function fetchData() {
+    <script>
+      let bpmData = [];
+      let accelData = [];
+      let labels = [];
+
+      async function fetchData() {
         try {
-            const response = await fetch('/get_data');
-            const result = await response.json();
-            console.log("Dữ liệu từ server:", result);
+          const response = await fetch("/get_data");
+          const result = await response.json();
+          console.log("Dữ liệu từ server:", result);
 
-            const data = result.data;
-            if (data.length > 0) {
-                let tableContent = "";
-                let latestData = data.slice(-10);
+          const data = result.data;
+          if (data.length > 0) {
+            let tableContent = "";
+            let latestData = data.slice(-10);
 
-                bpmData = [];
-                accelData = [];
-                labels = [];
+            bpmData = [];
+            accelData = [];
+            labels = [];
 
-                latestData.forEach((row, index) => {
-                    tableContent += `
+            latestData.forEach((row, index) => {
+              tableContent += `
                         <tr>
                             <td>${row.IR_value}</td>
                             <td>${row.BPM}</td>
@@ -113,77 +122,97 @@
                             <td>${row.Accel_Z}</td>
                             <td>${row.A_total}</td>
                         </tr>`;
-                    bpmData.push(parseFloat(row.BPM));
-                    accelData.push(parseFloat(row.A_total));
-                    labels.push(index + 1);
-                });
-                document.getElementById("data-table").innerHTML = tableContent;
-                updateChart();
-                updateAlert(result.health_status);
-            }
+              bpmData.push(parseFloat(row.BPM));
+              accelData.push(parseFloat(row.A_total));
+              labels.push(index + 1);
+            });
+            document.getElementById("data-table").innerHTML = tableContent;
+            updateChart();
+            updateAlert(result.health_status);
+          }
         } catch (error) {
-            console.error("Error fetching data:", error);
+          console.error("Error fetching data:", error);
         }
-    }
+      }
 
-    function updateAlert(healthStatus) {
-        let alertDiv = document.getElementById("alert-status");
-        if (healthStatus) {
-            alertDiv.innerText = `Trạng thái sức khỏe: ${healthStatus}`;
-            alertDiv.style.display = "block";
-            if (healthStatus.includes("Bình thường")) {
-                alertDiv.className = "alert normal";
-            } else if (healthStatus.includes("Cảnh báo")) {
-                alertDiv.className = "alert warning";
-            } else {
-                alertDiv.className = "alert danger";
-            }
+function updateAlert(healthStatus) {
+    let alertDiv = document.getElementById("alert-status");
+    if (healthStatus) {
+        let message = "";
+
+        if (healthStatus.includes("Bình thường")) {
+            message = "Nhịp tim bình thường, đang hoạt động nhẹ.";
+            alertDiv.className = "alert normal";
+        } else if (healthStatus.includes("Hoạt động nhẹ")) {
+            message = "Nhịp tim trong mức an toàn, hoạt động nhẹ.";
+            alertDiv.className = "alert normal";
+        } else if (healthStatus.includes("Hoạt động trung bình")) {
+            message = "Nhịp tim ổn định, bạn đang vận động ở mức trung bình.";
+            alertDiv.className = "alert warning";
+        } else if (healthStatus.includes("Hoạt động mạnh")) {
+            message = "Bạn đang hoạt động mạnh, nhịp tim tăng cao.";
+            alertDiv.className = "alert warning";
+        } else if (healthStatus.includes("Cảnh báo sức khoẻ không ổn định")) {
+            message = "Nhịp tim bất thường, cần kiểm tra sức khỏe!";
+            alertDiv.className = "alert danger";
+        } else if (healthStatus.includes("Hoạt động thể chất mạnh")) {
+            message = "Bạn đang tập luyện cường độ cao, chú ý sức khoẻ!";
+            alertDiv.className = "alert danger";
+        } else if (healthStatus.includes("Cảnh báo nguy hiểm")) {
+            message = "Nhịp tim và vận động không ổn định! Cần kiểm tra ngay!";
+            alertDiv.className = "alert danger";
         } else {
-            alertDiv.style.display = "none";
+            message = "Trạng thái sức khỏe không xác định.";
+            alertDiv.className = "alert";
         }
-    }
 
-    function updateChart() {
+        alertDiv.innerText = `Trạng thái sức khỏe: ${message}`;
+        alertDiv.style.display = "block";
+    } else {
+        alertDiv.style.display = "none";
+    }
+}
+
+      function updateChart() {
         bpmChart.data.labels = labels;
         bpmChart.data.datasets[0].data = bpmData;
         bpmChart.data.datasets[1].data = accelData;
         bpmChart.update();
-    }
+      }
 
-    let ctx = document.getElementById("irChart").getContext("2d");
-    let bpmChart = new Chart(ctx, {
+      let ctx = document.getElementById("irChart").getContext("2d");
+      let bpmChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: [],
-            datasets: [
-                {
-                    label: "BPM",
-                    data: [],
-                    borderColor: "red",
-                    borderWidth: 2,
-                    fill: false
-                },
-                {
-                    label: "Total Acceleration",
-                    data: [],
-                    borderColor: "blue",
-                    borderWidth: 2,
-                    fill: false
-                }
-            ]
+          labels: [],
+          datasets: [
+            {
+              label: "BPM",
+              data: [],
+              borderColor: "red",
+              borderWidth: 2,
+              fill: false,
+            },
+            {
+              label: "Total Acceleration",
+              data: [],
+              borderColor: "blue",
+              borderWidth: 2,
+              fill: false,
+            },
+          ],
         },
         options: {
-            responsive: true,
-            scales: {
-                x: { title: { display: true, text: "Recent Data Points" } },
-                y: { title: { display: true, text: "Values" } }
-            }
-        }
-    });
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: "Recent Data Points" } },
+            y: { title: { display: true, text: "Values" } },
+          },
+        },
+      });
 
-    setInterval(fetchData, 500);
-    fetchData();
-</script>
-
-</body>
+      setInterval(fetchData, 500);
+      fetchData();
+    </script>
+  </body>
 </html>
