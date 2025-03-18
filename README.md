@@ -3,13 +3,12 @@
 <div align="center">
 
 <p align="center">
-  <img src="images/logo_project.png" alt="Project Logo" width="200"/>
+  <img src="images/logoDaiNam.png" alt="Project Logo" width="200"/>
 </p>
 
 [![Made by AIoTLab](https://img.shields.io/badge/Made%20by%20AIoTLab-blue?style=for-the-badge)](https://www.facebook.com/DNUAIoTLab)
-[![ESP32](https://img.shields.io/badge/ESP32-WiFi-blue?style=for-the-badge)]()
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-AI-orange?style=for-the-badge&logo=tensorflow)]()
-
+[![Fit DNU](https://img.shields.io/badge/Fit%20DNU-green?style=for-the-badge)](https://fitdnu.net/)
+[![DaiNam University](https://img.shields.io/badge/DaiNam%20University-red?style=for-the-badge)](https://dainam.edu.vn)
 </div>
 
 <h2 align="center">Hệ thống theo dõi sức khỏe theo thời gian thực</h2>
