@@ -135,3 +135,7 @@ http://localhost:5000
 - **Cảnh báo sức khỏe** nếu có bất thường.
 
 ---
+## 📰 Poster
+<p align="center">
+  <img src="images/Poster.png" alt="System Architecture" width="800"/>
+</p>
