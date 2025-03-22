@@ -90,7 +90,12 @@
 2️⃣ **Cài đặt thư viện Python**
 
 ```bash
-pip install flask pandas numpy tensorflow joblib scikit-learn
+pip install flask==3.1.0
+pip install pandas==1.5.3
+pip install numpy==1.24.0
+pip install tensorflow  # TensorFlow chưa được cài đặt, sẽ cài phiên bản mới nhất
+pip install joblib==1.4.2
+pip install scikit-learn==1.1.3
 ```
 
 3️⃣ **Huấn luyện mô hình AI**
@@ -139,3 +144,15 @@ http://localhost:5000
 <p align="center">
   <img src="images/Poster.png" alt="System Architecture" width="800"/>
 </p>
+
+## 🤝 Đóng góp
+Dự án được phát triển bởi 4 thành viên:
+
+| Họ và Tên            | Vai trò                  |
+|----------------------|--------------------------|
+| Nguyễn Thị Thùy Linh | Phát triển toàn bộ mã nguồn, thiết kế cơ sở dữ liệu, kiểm thử và triển khai dự án .|
+| Nguyễn Anh Tuấn      | Biên soạn tài liệu Overleaf và hỗ trợ bài tập lớn.|
+| Đặng Đình Quân    | Thiết kế slide PowerPoint, Poster, hỗ trợ bài tập lớn.|
+| Nguyễn Lan Phượng     | Hỗ trợ bài tập lớn, thuyết trình và thực hiện video giới thiệu.|
+
+© 2025 NHÓM 4, CNTT16-05, TRƯỜNG ĐẠI HỌC ĐẠI NAM
